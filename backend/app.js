@@ -522,20 +522,18 @@ app.delete("/api/delete-sim/:simId", authenticateToken, async (req, res) => {
 });
 
 // ========================== 
-// STATIC FILES & REACT ROUTING 
-// ========================== 
-// Serve the built Vite frontend files from the "dist" directory
-app.use(express.static(path.join(__dirname, "../frontend/dist"))); 
-
-// Catch-All Route: Any route that isn't matched by the /api/* routes above
-// must return the React app. This prevents "404 Not Found" on page refresh.
-app.get("*", (req, res) => { 
-  res.sendFile(path.join(__dirname, "../frontend/dist/index.html")); 
-});
-
-// ==========================
 // START SERVER
 // ==========================
+// The backend is deployed as an API-only service on Render.
+// Frontend assets are served separately by the frontend static site.
+
+// If you ever want to deploy the backend and frontend together as one service,
+// you can build the frontend during backend deploy and restore the static server.
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+  console.log("Press Ctrl+C to stop the server.");
+});
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
   console.log("Press Ctrl+C to stop the server.");
