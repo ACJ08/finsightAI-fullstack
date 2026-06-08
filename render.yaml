@@ -11,21 +11,10 @@ services:
     buildCommand: cd backend && npm install
     startCommand: node backend/app.js
     envVars:
-      # Environment variables for backend (set values in Render Dashboard)
+      # Environment variables for backend. Set secret/runtime values in Render Dashboard.
       - key: NODE_ENV
         value: production
-      - key: PORT
-        # Render assigns this dynamically, no need to set
-        # Just include it for reference
-      - key: MONGODB_URI
-        scope: runtime
-      - key: JWT_SECRET
-        scope: runtime
-      - key: AI_API_KEY
-        scope: runtime
       - key: FRONTEND_URL
-        scope: runtime
-        # Set this to the deployed frontend site URL
         value: https://finsight-frontend-561p.onrender.com
       - key: LOG_LEVEL
         value: info
