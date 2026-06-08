@@ -1,4 +1,4 @@
-import { useState } from "react"; // 1. IMPORT useState to track loading
+import { useState } from "react"; 
 import { FileText } from "lucide-react";
 import TitleCard from "../cards/TitleCard";
 import DescriptionCard from "../cards/DescriptionCard";
@@ -6,16 +6,16 @@ import FormCard from "../cards/FormsCard";
 import { createSim } from "../../utils/simUtils";
 
 const NewSimulationForm = ({ onClose, onSuccess }) => { 
-    // 2. ADD state to track whether the form is currently processing
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e) => { 
         e.preventDefault();
         
-        // 3. TURN ON the loading state the moment the user clicks submit
+        // Disable submission during loading
         setIsLoading(true);
 
         const simData = { 
+            // Extract form data from all input fields
             project_name: e.target.elements["name"].value,
             target_segment: e.target.elements["segment"].value, 
             key_features: e.target.elements["features"].value, 
@@ -24,18 +24,47 @@ const NewSimulationForm = ({ onClose, onSuccess }) => {
         };
 
         try { 
-            await createSim(simData); 
+            // Attempt to call the backend API
+            const response = await createSim(simData); 
             
+            // Verify successful response before proceeding
+            if (!response || !response.data) {
+                throw new Error("Invalid response from server - no data returned");
+            }
+            
+            // If API succeeds, refresh the dashboard and close
             if (onSuccess) {
                 await onSuccess(); 
             }
             
-            alert("Simulation created successfully!");
+            // Show success message
+            alert("✅ Simulation created successfully!");
+            
+            // Close the modal - this will also reset form state
             onClose(); 
         } catch (err) { 
-            alert(err || "Network error. Please try again."); 
-            // 4. TURN OFF loading if there is an error, so the user can fix it and try again
+            // CRITICAL FIX: Always reset loading state on error
+            // This allows users to retry after a failure
             setIsLoading(false);
+            
+            // Extract meaningful error message for the user
+            let displayError = "Failed to create simulation";
+            
+            if (typeof err === 'string') {
+                displayError = err;
+            } else if (err.response?.data?.error) {
+                displayError = err.response.data.error;
+            } else if (err.message) {
+                displayError = err.message;
+            } else if (err.code === 'ECONNREFUSED') {
+                displayError = "Backend server is offline. Please try again later.";
+            }
+            
+            // Log full error to console for debugging
+            console.error("❌ Simulation creation failed:", err);
+            
+            // Show user-friendly error message with more context
+            alert("❌ Simulation Failed:\n" + displayError); 
         } 
     }; 
 
@@ -55,7 +84,7 @@ const NewSimulationForm = ({ onClose, onSuccess }) => {
                             type="text"
                             name="name"
                             required
-                            disabled={isLoading} // 5. Disable input when loading
+                            disabled={isLoading}
                             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
                         />
                     </FormCard>
@@ -100,17 +129,15 @@ const NewSimulationForm = ({ onClose, onSuccess }) => {
                         ></textarea>
                     </FormCard>
 
-                    {/* 6. SHOW a progress message ONLY when isLoading is true */}
                     {isLoading && (
-                        <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded flex items-center space-x-3 mt-4 animate-pulse">
-                            <span className="font-medium text-sm">
-                                AI is analyzing market data and generating your simulation. Please wait...
+                        <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded flex items-center space-x-3 mt-4">
+                            <span className="font-medium text-sm animate-pulse">
+                                AI is generating simulation... (This takes 10-20 seconds)
                             </span>
                         </div>
                     )}
 
                     <div className="flex justify-end mt-4">
-                        {/* 7. CHANGE button appearance based on isLoading state */}
                         <button
                             type="submit"
                             disabled={isLoading}
@@ -120,18 +147,7 @@ const NewSimulationForm = ({ onClose, onSuccess }) => {
                                     : "bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white"
                             }`}
                         >
-                            {isLoading ? (
-                                <>
-                                    {/* Built-in Tailwind SVG Spinner */}
-                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    <span>Processing...</span>
-                                </>
-                            ) : (
-                                <span>Submit</span>
-                            )}
+                            {isLoading ? "Processing..." : "Submit"}
                         </button>
                     </div>
                 </form>

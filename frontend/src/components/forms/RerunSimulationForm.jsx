@@ -12,7 +12,7 @@ const RerunSimulationForm = ({ simId, simulation, onClose }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        // 3. TURN ON the loading state the moment the user clicks submit
+        // Turn on the loading state the moment the user clicks submit
         setIsLoading(true);
         
         const updatedData = {
@@ -24,16 +24,49 @@ const RerunSimulationForm = ({ simId, simulation, onClose }) => {
         };
 
         try {
-            await rerunSim(simId, updatedData);
-            onClose(); // Close modal
+            // Call the API to rerun the simulation
+            const response = await rerunSim(simId, updatedData);
             
-            // Note: window.location.reload() works perfectly for now to see the fresh data.
-            // As you get more advanced, you can pass an `onSuccess` prop here just like the NewSimulationForm!
-            window.location.reload(); 
+            // Validate response was successful
+            if (!response || !response.data) {
+                throw new Error("Invalid response from server - no data returned");
+            }
+            
+            // Show success message to user
+            alert("✅ Simulation re-run successfully! Refreshing data...");
+            
+            // Close the modal
+            onClose();
+            
+            // Use a small delay before reload to let user see the success message
+            // In production, you would pass an onSuccess callback to update state instead
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+            
         } catch (err) {
-            alert("Error re-running simulation.");
-            // 4. TURN OFF loading if there is an error, so the user can fix it and try again
+            // CRITICAL FIX: Always reset loading state on error
+            // This allows users to retry after failures
             setIsLoading(false);
+            
+            // Extract meaningful error message
+            let displayError = "Failed to re-run simulation";
+            
+            if (typeof err === 'string') {
+                displayError = err;
+            } else if (err.response?.data?.error) {
+                displayError = err.response.data.error;
+            } else if (err.message) {
+                displayError = err.message;
+            } else if (err.code === 'ECONNREFUSED') {
+                displayError = "Backend server is offline. Please try again.";
+            }
+            
+            // Log full error to console for debugging
+            console.error("❌ Simulation rerun failed:", err);
+            
+            // Show user-friendly error message
+            alert("❌ Error re-running simulation:\n" + displayError);
         }
     };
 

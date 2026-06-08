@@ -1,0 +1,61 @@
+# render.yaml - Render.com Deployment Configuration
+# This file configures both backend and frontend services for Render.com deployment
+# Push this file to your GitHub repo and Render will auto-detect and use it
+
+services:
+  # Backend API Service
+  - type: web
+    name: finsight-api
+    runtime: node
+    region: ohio  # Change to your preferred region
+    buildCommand: cd backend && npm install
+    startCommand: node backend/app.js
+    envVars:
+      # Environment variables for backend (set values in Render Dashboard)
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        # Render assigns this dynamically, no need to set
+        # Just include it for reference
+      - key: MONGODB_URI
+        scope: build  # Database URI is only needed at runtime, not build
+      - key: JWT_SECRET
+        scope: build
+      - key: AI_API_KEY
+        scope: build
+      - key: FRONTEND_URL
+        scope: build
+      - key: LOG_LEVEL
+        value: info
+
+  # Frontend Static Site
+  - type: static
+    name: finsight-frontend
+    runtime: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    headers:
+      - path: "/*"
+        name: Cache-Control
+        value: max-age=3600
+
+  # PostgreSQL Database (Optional - currently using MongoDB Atlas)
+  # Uncomment if you want to migrate from MongoDB to PostgreSQL
+  # - type: pserv
+  #   name: finsight-db
+  #   runtime: postgres15
+  #   plan: free
+  #   ipAllowList: []  # Allow all
+
+  # Redis Cache (Optional - for future scaling)
+  # - type: redis
+  #   name: finsight-cache
+  #   runtime: redis
+  #   plan: free
+  #   ipAllowList: []  # Allow all
+
+# Global environment variables (if needed)
+env:
+  - key: ENVIRONMENT
+    scope: runtime
+    value: production

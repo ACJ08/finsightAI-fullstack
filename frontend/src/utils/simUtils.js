@@ -1,11 +1,15 @@
 // src/utils/simUtils.js
 import api from "./api";
 
+
 export const createSim = async (simData) => {
   try {
     const res = await api.post("/new-sim", simData);
     return res.data;
   } catch (err) {
+    // CRITICAL: Log the full error to the console so you can see it
+    console.error("Full Error from API:", err);
+    // Throw the specific error message from the backend if it exists
     throw err.response?.data?.error || "Failed to create simulation";
   }
 };

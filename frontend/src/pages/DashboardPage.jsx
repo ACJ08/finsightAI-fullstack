@@ -141,15 +141,16 @@ export const DashboardPage = ({ onLogout }) => {
 				</section>
 			</div>
 
+			// Update the Modal section in DashboardPage.jsx:
 			{isModalOpen && (
-                <Modal onClose={closeModal}>
-                    {/* ADDED onSuccess={fetchSimulations} so the form can trigger a dashboard refresh */}
-                    <SimulationForm 
-                        onClose={closeModal} 
-                        onSuccess={fetchSimulations} 
-                    />
-                </Modal>
-            )}
+				<Modal onClose={closeModal}>
+					<SimulationForm 
+						onClose={closeModal} 
+						// FIX: Pass the fetch function so the form can tell the dashboard to refresh
+						onSuccess={fetchSimulations} 
+					/>
+				</Modal>
+			)}
         </div>
     );
 };
