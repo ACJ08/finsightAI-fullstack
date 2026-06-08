@@ -25,7 +25,8 @@ services:
         scope: runtime
       - key: FRONTEND_URL
         scope: runtime
-        # Set this to the deployed frontend site URL, e.g. https://finsight-frontend.onrender.com
+        # Set this to the deployed frontend site URL
+        value: https://finsight-frontend-561p.onrender.com
       - key: LOG_LEVEL
         value: info
 
