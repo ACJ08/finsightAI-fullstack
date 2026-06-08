@@ -18,13 +18,14 @@ services:
         # Render assigns this dynamically, no need to set
         # Just include it for reference
       - key: MONGODB_URI
-        scope: build  # Database URI is only needed at runtime, not build
+        scope: runtime
       - key: JWT_SECRET
-        scope: build
+        scope: runtime
       - key: AI_API_KEY
-        scope: build
+        scope: runtime
       - key: FRONTEND_URL
-        scope: build
+        scope: runtime
+        # Set this to the deployed frontend site URL, e.g. https://finsight-frontend.onrender.com
       - key: LOG_LEVEL
         value: info
 

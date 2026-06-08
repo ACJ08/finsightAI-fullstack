@@ -277,6 +277,28 @@ app.get("/ping", (req, res) => {
 });
 
 // ==========================
+// ROOT ROUTE
+// ==========================
+app.get("/", (req, res) => {
+  if (process.env.FRONTEND_URL) {
+    return res.redirect(process.env.FRONTEND_URL);
+  }
+
+  res.status(200).json({
+    status: "FinSight AI API",
+    message: "Backend is running. This service exposes API routes for the FinSight AI frontend.",
+    frontend: process.env.FRONTEND_URL || "Not configured",
+    docs: {
+      health: "/health",
+      ping: "/ping",
+      register: "/api/register",
+      login: "/api/login"
+    },
+    note: "Use the frontend static site URL to access the web app. This endpoint is API-only."
+  });
+});
+
+// ==========================
 // REGISTER
 // ==========================
 app.post("/api/register", async (req, res) => {
