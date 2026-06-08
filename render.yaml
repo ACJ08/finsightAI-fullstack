@@ -30,20 +30,25 @@ services:
       - key: LOG_LEVEL
         value: info
 
-  # Frontend Static Site
-  - type: static
+  # Frontend Static Site served by a lightweight Node process (blueprint validators
+  # accept 'web' type reliably). This will build the frontend and serve the
+  # generated `frontend/dist` directory using `npx serve` so the static files
+  # are available on Render. If you prefer a native Render static site, set up
+  # the static site manually in the Render dashboard.
+  - type: web
     name: finsight-frontend
-    runtime: static
+    runtime: node
+    region: ohio
     buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/dist
+    # Use npx serve to publish the built `dist` folder. Render provides PORT.
+    startCommand: npx serve -s frontend/dist -l $PORT
     envVars:
       - key: VITE_API_URL
         value: https://finsight-api-rvll.onrender.com/api
         scope: build
-    headers:
-      - path: "/*"
-        name: Cache-Control
-        value: max-age=3600
+    # Optional: configure caching headers at CDN level in the Render dashboard
+    # rather than in the service itself when using a web service to serve
+    # static content.
 
   # PostgreSQL Database (Optional - currently using MongoDB Atlas)
   # Uncomment if you want to migrate from MongoDB to PostgreSQL
