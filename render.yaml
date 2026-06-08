@@ -64,9 +64,3 @@ services:
   #   runtime: redis
   #   plan: free
   #   ipAllowList: []  # Allow all
-
-# Global environment variables (if needed)
-env:
-  - key: ENVIRONMENT
-    scope: runtime
-    value: production
