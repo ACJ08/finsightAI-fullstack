@@ -1,7 +1,3 @@
-Here’s your **revised, polished, and more professionally framed README.md** with your contribution + finalist achievement properly integrated (without sounding exaggerated or unbalanced):
-
----
-
 # 📘 FinSight AI — Next-Gen Prototyping Platform
 
 **Empowering Philippine Banks to Serve MSMEs through AI-Powered Market Simulation**
