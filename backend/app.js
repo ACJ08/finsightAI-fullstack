@@ -41,44 +41,51 @@ if (!JWT_SECRET) {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS Configuration: Explicitly allow your production frontend
+// Build a safe allowed origins list. Prefer explicit FRONTEND_URL but
+// fall back to the known frontend URL for this project so deployed
+// requests do not fail if the env was not set in Render dashboard.
+const fallbackFrontend = "https://finsight-frontend-561p.onrender.com";
 const allowedOrigins = [
   // Local Development URLs
-  "http://localhost:5173",    // Vite dev server (standard port)
-  "http://localhost:3000",    // Alternative local port
-  "http://127.0.0.1:5173",    // Alternative localhost notation
-  "http://127.0.0.1:3000",    // Alternative localhost notation
-  
-  // Production URLs (loaded from environment variables)
-  process.env.FRONTEND_URL,   // Your Render.com frontend URL
-  
-  // Remove undefined values if variables aren't set
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:3000",
+  // Use configured FRONTEND_URL when available, otherwise fallback
+  process.env.FRONTEND_URL || fallbackFrontend,
 ].filter(Boolean);
 
-// Detailed CORS configuration
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) {
-      return callback(null, true);
+console.log("CORS allowed origins:", allowedOrigins.join(", "));
+
+// Lightweight CORS handler that ensures preflight (OPTIONS) requests
+// are handled and the proper headers are returned for allowed origins.
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  // Allow requests with no origin (curl, server-to-server)
+  if (!origin) return next();
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+
+    // Short-circuit preflight
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
     }
-    
-    // Check if origin is in allowed list
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    
-    // Reject requests from unauthorized origins
-    const errorMsg = `🚨 CORS BLOCKED: Origin '${origin}' is not allowed. Allowed: ${allowedOrigins.join(', ')}`;
-    console.warn(errorMsg);
-    return callback(new Error(errorMsg), false);
-  },
-  credentials: true,                    // Allow cookies
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Length'],
-  maxAge: 86400                         // Cache CORS headers for 24 hours
-}));
+
+    return next();
+  }
+
+  // Blocked origin
+  console.warn(`🚨 CORS BLOCKED: Origin '${origin}' is not allowed`);
+  return res.status(403).json({ error: 'CORS blocked - origin not allowed' });
+});
+
+// Also register a generic OPTIONS handler to be safe
+app.options('*', (req, res) => res.sendStatus(200));
 
 // ==========================
 // SECURITY HEADERS
