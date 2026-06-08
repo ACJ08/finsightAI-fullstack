@@ -2,8 +2,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  //baseURL: "http://localhost:62708/api",
-  baseURL: "https://finsight-api-nskw.onrender.com/api",
+  // baseURL: "http://localhost:62708/api",
+   baseURL: import.meta.env.VITE_API_URL,
 });
 
 api.interceptors.request.use(config => {
