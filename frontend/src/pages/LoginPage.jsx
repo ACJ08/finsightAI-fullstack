@@ -29,7 +29,7 @@ const LoginPage = ({ onLogin }) => {
       {/* Logo + Title */}
       <div className="flex items-center mb-6">
         <img
-          src="/src/assets/FinSightAI-Logo2.png"
+          src="/FinSightAI-Logo2.png"
           alt="Finsight AI Logo"
           className="w-16 h-16 object-contain mr-3"
         />

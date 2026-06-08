@@ -5,7 +5,7 @@ import api from "./api";
 export const createSim = async (simData) => {
   try {
     const res = await api.post("/new-sim", simData);
-    return res.data;
+    return res;
   } catch (err) {
     // CRITICAL: Log the full error to the console so you can see it
     console.error("Full Error from API:", err);
@@ -44,7 +44,7 @@ export const rerunSim = async (simId, updatedData) => {
     const res = await api.put(`/rerun-sim/${simId}`, updatedData, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    return res.data;
+    return res;
   } catch (err) {
     // This logs the REAL error to your browser console so you can see it!
     console.error("Rerun API Error:", err.response?.data || err);

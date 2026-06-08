@@ -27,9 +27,7 @@ export const LoadingScreen = ({ onComplete }) => {
 			{/* Logo and Text side-by-side */}
 			<div className="flex items-center">
 				<img
-					src="/src/assets/FinSightAI-Logo2.png"
-					alt="Finsight AI Logo"
-					className="w-12 h-12 object-contain"
+				src="/FinSightAI-Logo2.png"
 				/>
 				<div className="text-4xl font-bold flex items-center">
 					{fullText.substring(0, index)}
