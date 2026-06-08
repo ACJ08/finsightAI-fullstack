@@ -534,7 +534,3 @@ app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
   console.log("Press Ctrl+C to stop the server.");
 });
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-  console.log("Press Ctrl+C to stop the server.");
-});
