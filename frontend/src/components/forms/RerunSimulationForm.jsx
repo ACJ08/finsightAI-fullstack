@@ -5,7 +5,7 @@ import DescriptionCard from "../cards/DescriptionCard";
 import FormCard from "../cards/FormsCard";
 import { rerunSim } from "../../utils/simUtils";
 
-const RerunSimulationForm = ({ simId, simulation, onClose }) => {
+const RerunSimulationForm = ({ simId, simulation, onClose, onSuccess }) => {
     // 2. ADD state to track whether the form is currently processing
     const [isLoading, setIsLoading] = useState(false);
     
@@ -35,14 +35,13 @@ const RerunSimulationForm = ({ simId, simulation, onClose }) => {
             // Show success message to user
             alert("✅ Simulation re-run successfully! Refreshing data...");
             
-            // Close the modal
-            onClose();
+            // 1. Update the data silently in the background without refreshing the page
+            if (onSuccess) {
+                await onSuccess();
+            }
             
-            // Use a small delay before reload to let user see the success message
-            // In production, you would pass an onSuccess callback to update state instead
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            // 2. Close the modal smoothly
+            onClose();
             
         } catch (err) {
             // CRITICAL FIX: Always reset loading state on error
@@ -86,7 +85,8 @@ const RerunSimulationForm = ({ simId, simulation, onClose }) => {
                             defaultValue={simulation.project_name}
                             disabled={isLoading} // 5. Disable input when loading
                             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
-                        />
+                            style={{ color: "#FFFFFF" }}
+                       />
                     </FormCard>
 
                     <FormCard label="Segment">
@@ -97,6 +97,7 @@ const RerunSimulationForm = ({ simId, simulation, onClose }) => {
                             defaultValue={simulation.target_segment}
                             disabled={isLoading}
                             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+                            style={{ color: "#FFFFFF" }}
                         />
                     </FormCard>
 

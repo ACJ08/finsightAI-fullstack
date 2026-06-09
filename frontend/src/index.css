@@ -58,3 +58,27 @@ html, body{
       left: 0;
     }
 }
+
+/* Finsight AI Responsive Logo Fix */
+.loading-logo {
+  width: 100%;
+  max-width: 140px; /* Mobile size limit */
+  height: auto; /* Maintains proportional aspect ratio */
+  object-fit: contain; /* Prevents stretching/distortion */
+  margin: 0 auto;
+  display: block;
+}
+
+/* Tablet size */
+@media (min-width: 768px) {
+  .loading-logo {
+    max-width: 180px; 
+  }
+}
+
+/* Desktop size */
+@media (min-width: 1024px) {
+  .loading-logo {
+    max-width: 220px; 
+  }
+}

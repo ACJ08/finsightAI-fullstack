@@ -42,7 +42,7 @@ const SimulationDetailsPage = ({ onLogout }) => {
     // 3. Close modal and refresh data if something changed
     const closeModal = () => {
         setModalType(null);
-        fetchSimulationDetails();
+       // fetchSimulationDetails();
     };
 
     if (loading) return <div className="p-4 text-center">Loading simulation...</div>;
@@ -119,14 +119,25 @@ const SimulationDetailsPage = ({ onLogout }) => {
 
             {modalType && (
                 <Modal onClose={closeModal}>
-                    {modalType === "new" && <NewSimulationForm onClose={closeModal} />}
+                    {/* Added onSuccess prop to NewSimulationForm */}
+                    {modalType === "new" && (
+                        <NewSimulationForm 
+                            onClose={closeModal} 
+                            onSuccess={fetchSimulationDetails} 
+                        />
+                    )}
+                    
+                    {/* Added onSuccess prop to RerunSimulationForm */}
                     {modalType === "rerun" && (
                         <RerunSimulationForm 
                             simId={id} 
                             simulation={simulation} 
                             onClose={closeModal} 
+                            onSuccess={fetchSimulationDetails}
                         />
                     )}
+                    
+                    {/* Delete form does NOT get onSuccess because the data is gone */}
                     {modalType === "delete" && (
                         <DeleteSimulationForm 
                             simId={id} 

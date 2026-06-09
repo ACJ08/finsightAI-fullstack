@@ -141,7 +141,7 @@ export const DashboardPage = ({ onLogout }) => {
 				</section>
 			</div>
 
-			// Update the Modal section in DashboardPage.jsx:
+			
 			{isModalOpen && (
 				<Modal onClose={closeModal}>
 					<SimulationForm 

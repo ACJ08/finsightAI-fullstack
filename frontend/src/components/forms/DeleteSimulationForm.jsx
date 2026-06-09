@@ -7,21 +7,19 @@ const DeleteSimulationForm = ({ simId, onClose }) => {
   // We use navigate to automatically route you away from deleted data
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // 1. Tell the backend to delete this specific ID
-      await deleteSim(simId);
-      
-      // 2. Close the pop-up modal
-      onClose();
-      
-      // 3. Kick the user back to the dashboard
-      navigate("/dashboard");
-    } catch (err) {
-      alert("Error deleting simulation.");
+        await deleteSim(simId);
+        // Navigate away FIRST, so the UI doesn't try to render deleted data
+        navigate("/dashboard", { replace: true }); 
+        
+        // Then close the modal cleanly
+        onClose(); 
+    } catch (err) { 
+        alert("Failed to delete: " + err);
     }
-  };
+};
 
   return (
     <div className="p-4">
