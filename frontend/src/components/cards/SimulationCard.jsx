@@ -29,7 +29,9 @@ const SimulationCard = ({
           <ComplianceBadge status={complianceCategory} />
         </div>
 
-        <p className="text-sm font-medium" style={{ color: "#FFFFFF" }}>Segment: {segment}</p>
+        <p className="text-sm font-medium text-gray-500">
+          Segment: <span style={{ color: "#FFFFFF" }}>{segment}</span>
+        </p>
 
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-600">Market Fit Score: </span>

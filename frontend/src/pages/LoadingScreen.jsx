@@ -28,6 +28,8 @@ export const LoadingScreen = ({ onComplete }) => {
 			<div className="flex items-center">
 				<img
 				src="/FinSightAI-Logo2.png"
+                alt="Finsight AI Logo"
+                className="w-16 md:w-24 h-auto object-contain mr-4"
 				/>
 				<div className="text-4xl font-bold flex items-center">
 					{fullText.substring(0, index)}
