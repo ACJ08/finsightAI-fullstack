@@ -2,6 +2,8 @@
 
 **Empowering Philippine Banks to Serve MSMEs through AI-Powered Market Simulation**
 
+Deployed: https://finsight-api-rvll.onrender.com
+
 ---
 
 ## 🚀 Overview
