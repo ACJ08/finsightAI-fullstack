@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const path = require("path");
-const cors = require("cors");
+
 
 const User = require("./models/User");
 const Sim = require("./models/Sim");
@@ -44,7 +44,7 @@ app.use(express.urlencoded({ extended: true }));
 // Build a safe allowed origins list. Prefer explicit FRONTEND_URL but
 // fall back to the known frontend URL for this project so deployed
 // requests do not fail if the env was not set in Render dashboard.
-const fallbackFrontend = "null";
+
 const allowedOrigins = [
   // Local Development URLs
   "http://localhost:5173",
@@ -88,10 +88,6 @@ app.use((req, res, next) => {
 });
 
 
-
-app.options(/.*/, (req, res) => {
-  res.sendStatus(200);
-});
 
 // ==========================
 // SECURITY HEADERS
