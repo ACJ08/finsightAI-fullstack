@@ -1,12 +1,17 @@
 // src/utils/api.js
 import axios from "axios";
 
+// Ensure the base URL always has a trailing slash for correct Axios routing
+let backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+if (!backendUrl.endsWith('/')) {
+    backendUrl += '/';
+}
+
 // Create Axios instance with production-ready configuration
 const api = axios.create({
-   // Base URL from environment or fallback to localhost
-   baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api",
-   
-   // CRITICAL: Request timeout to prevent hanging forever
+  // Base URL from environment or fallback to localhost
+  baseURL: backendUrl,
+  // CRITICAL: Request timeout to prevent hanging forever
    // Set to 60 seconds for AI simulations (longer operations can take time)
    timeout: 60000, // 60 seconds in milliseconds
    

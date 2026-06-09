@@ -20,7 +20,7 @@ const SimulationDetailsPage = ({ onLogout }) => {
     const fetchSimulationDetails = useCallback(async () => {
         try {
             setLoading(true);
-            const res = await api.get(`/get-sim/${id}`);
+            const res = await api.get(`get-sim/${id}`);
             setSimulation(res.data.data);
         } catch (err) {
             console.error("Failed to load details:", err);
