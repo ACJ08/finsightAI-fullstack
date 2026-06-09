@@ -44,16 +44,19 @@ app.use(express.urlencoded({ extended: true }));
 // Build a safe allowed origins list. Prefer explicit FRONTEND_URL but
 // fall back to the known frontend URL for this project so deployed
 // requests do not fail if the env was not set in Render dashboard.
-const fallbackFrontend = "https://finsight-frontend-561p.onrender.com";
+const fallbackFrontend = "null";
 const allowedOrigins = [
   // Local Development URLs
   "http://localhost:5173",
   "http://localhost:3000",
   "http://127.0.0.1:5173",
   "http://127.0.0.1:3000",
-  // Use configured FRONTEND_URL when available, otherwise fallback
-  process.env.FRONTEND_URL || fallbackFrontend,
-].filter(Boolean);
+  
+];
+
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
 
 console.log("CORS allowed origins:", allowedOrigins.join(", "));
 
@@ -84,8 +87,11 @@ app.use((req, res, next) => {
   return res.status(403).json({ error: 'CORS blocked - origin not allowed' });
 });
 
-// Also register a generic OPTIONS handler to be safe
-app.options('*', (req, res) => res.sendStatus(200));
+
+
+app.options(/.*/, (req, res) => {
+  res.sendStatus(200);
+});
 
 // ==========================
 // SECURITY HEADERS
@@ -308,15 +314,37 @@ app.get("/", (req, res) => {
 // ==========================
 // REGISTER
 // ==========================
+
 app.post("/api/register", async (req, res) => {
   const { username, password } = req.body;
 
+  if (!username || username.trim().length < 3) {
+    return res.status(400).json({
+      error: "Username must be at least 3 characters long",
+    });
+  }
+
+  if (!password || password.length < 6) {
+    return res.status(400).json({
+      error: "Password must be at least 6 characters long",
+    });
+  }
+
   try {
-    const user = new User({ username, password });
+    const user = new User({
+      username: username.trim(),
+      password,
+    });
+
     await user.save();
-    res.json({ message: "User registered!" });
+
+    res.json({
+      message: "User registered successfully",
+    });
   } catch (err) {
-    res.status(400).json({ error: "Username already exists." });
+    res.status(400).json({
+      error: "Username already exists.",
+    });
   }
 });
 
