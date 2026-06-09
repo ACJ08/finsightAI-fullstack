@@ -78,7 +78,7 @@ const SimulationDetailsPage = ({ onLogout }) => {
 
                     <section id="print-area">
                         <TitleCard title={simulation.project_name}>
-                            <p className="text-gray-600">{simulation.target_segment}</p>
+                            <p className="text-white font-medium">{simulation.target_segment}</p>
                         </TitleCard>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">

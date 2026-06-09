@@ -30,7 +30,7 @@ const SimulationCard = ({
         </div>
 
         <p className="text-sm font-medium text-gray-500">
-          Segment: <span style={{ color: "#FFFFFF" }}>{segment}</span>
+           Segment: <span className="text-white">{segment}</span>
         </p>
 
         <div className="flex items-center justify-between">

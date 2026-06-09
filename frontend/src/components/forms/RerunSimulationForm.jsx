@@ -85,7 +85,7 @@ const RerunSimulationForm = ({ simId, simulation, onClose, onSuccess }) => {
                             defaultValue={simulation.project_name}
                             disabled={isLoading} // 5. Disable input when loading
                             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
-                            style={{ color: "#FFFFFF" }}
+                            
                        />
                     </FormCard>
 
@@ -97,7 +97,7 @@ const RerunSimulationForm = ({ simId, simulation, onClose, onSuccess }) => {
                             defaultValue={simulation.target_segment}
                             disabled={isLoading}
                             className="w-full p-2 border rounded disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
-                            style={{ color: "#FFFFFF" }}
+                           
                         />
                     </FormCard>
 
